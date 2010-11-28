@@ -1,0 +1,37 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * This is the file description for Cck Min module.
+ *
+ * In this more verbose, multi-line description, you can specify what this
+ * file does exactly. Make sure to wrap your documentation in column 78 so
+ * that the file can be displayed nicely in default-sized consoles.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function cck_min_form_page_node_form_alter(&$form, &$form_state) {
+  $form['#validate'] = array('cck_min_field_images_validate');
+}
+
+function cck_min_field_images_validate(&$form, &$form_state) {
+  if ($form_state['values']['field_images']) {
+    
+    $num = 0;
+    $min = 2;
+    
+    foreach($form_state['values']['field_images'] as $key => $value) {
+      if (is_numeric($key) && !empty($value['fid'])) {
+        $num++;
+        if ($num >= $min) {
+          return;
+        }
+      }
+    }
+    
+    form_set_error('field_images', t('Upload at least %num images', array('%num' => $min)));
+  }
+}
